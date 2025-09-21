@@ -1,0 +1,1976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduLearn - Educational App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #4e54c8;
+            --secondary: #8f94fb;
+            --accent: #ff6b6b;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --card-bg: #ffffff;
+            --text-primary: #2d3436;
+            --text-secondary: #636e72;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 70px; /* Space for bottom nav */
+        }
+
+        .app-container {
+            max-width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Auth Screens */
+        .auth-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+        }
+
+        .auth-card {
+            background: white;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .auth-logo {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .auth-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .auth-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .auth-form {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .auth-btn:active {
+            transform: translateY(2px);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .auth-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* App Screens */
+        .app-screen {
+            display: none;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .app-screen.active {
+            display: block;
+        }
+
+        /* Header Styles */
+        .app-header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .header-title i {
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .header-actions i {
+            font-size: 1.2rem;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            transition: color 0.3s;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+
+        /* Content Sections */
+        .content-section {
+            padding: 15px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Welcome Section */
+        .welcome-card {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .welcome-card h2 {
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .welcome-card p {
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        /* Subject Cards */
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .subject-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+
+        .subject-card:active {
+            transform: scale(0.97);
+        }
+
+        .subject-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .subject-card h3 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .subject-card p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Test Section */
+        .test-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .test-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .test-progress {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .option {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: rgba(78, 84, 200, 0.1);
+        }
+
+        /* Profile Section */
+        .profile-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .profile-grade {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            padding: 10px;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-weight: 600;
+            margin: 20px 0 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title span {
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            height: 6px;
+            background: var(--light);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 3px;
+            width: 65%;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* Swipeable content */
+        .swipe-container {
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            display: flex;
+            gap: 15px;
+            padding: 5px 0 20px;
+            scrollbar-width: none; /* Firefox */
+        }
+
+        .swipe-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Edge */
+        }
+
+        .swipe-item {
+            scroll-snap-align: start;
+            flex: 0 0 85%;
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Test Creation */
+        .test-creator {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .creator-header {
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .grade-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .grade-btn {
+            padding: 10px;
+            text-align: center;
+            background: var(--light);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .grade-btn.selected {
+            background: var(--primary);
+            color: white;
+        }
+
+        .subject-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .subject-btn {
+            padding: 12px;
+            text-align: center;
+            background: var(--light);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .subject-btn.selected {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Responsive adjustments */
+        @media (min-width: 768px) {
+            .app-container {
+                max-width: 400px;
+                margin: 0 auto;
+            }
+            
+            body {
+                background: linear-gradient(to right, #8e9eab, #eef2f3);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 20px 0;
+            }
+            
+            .app-container {
+                height: 90vh;
+                border-radius: 20px;
+                overflow: hidden;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+                background: var(--bg-gradient);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Screens -->
+    <div id="auth-screen" class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h2 class="auth-title">Welcome to EduLearn</h2>
+                <p class="auth-subtitle">Sign in to continue your learning journey</p>
+            </div>
+
+            <form class="auth-form" id="login-form">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="auth-btn">Sign In</button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Don't have an account? <a class="auth-link" id="switch-to-register">Register</a></p>
+            </div>
+        </div>
+
+        <div class="auth-card" id="register-card" style="display: none;">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h2 class="auth-title">Create an Account</h2>
+                <p class="auth-subtitle">Join thousands of students learning with EduLearn</p>
+            </div>
+
+            <form class="auth-form" id="register-form">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-input" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Grade Level</label>
+                    <select class="form-input" required>
+                        <option value="">Select your grade</option>
+                        <option value="1">Grade 1</option>
+                        <option value="2">Grade 2</option>
+                        <option value="3">Grade 3</option>
+                        <option value="4">Grade 4</option>
+                        <option value="5">Grade 5</option>
+                        <option value="6">Grade 6</option>
+                        <option value="7">Grade 7</option>
+                        <option value="8">Grade 8</option>
+                        <option value="9">Grade 9</option>
+                        <option value="10">Grade 10</option>
+                        <option value="11">Grade 11</option>
+                        <option value="12">Grade 12</option>
+                    </select>
+                </div>
+                <button type="submit" class="auth-btn">Create Account</button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a class="auth-link" id="switch-to-login">Sign In</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Screens -->
+    <div id="app-screen" class="app-screen">
+        <!-- App Header -->
+        <div class="app-header">
+            <div class="header-title">
+                <i class="fas fa-graduation-cap"></i>
+                <span>EduLearn</span>
+            </div>
+            <div class="header-actions">
+                <i class="fas fa-search"></i>
+                <i class="fas fa-bell"></i>
+                <i class="fas fa-sign-out-alt" id="logout-btn"></i>
+            </div>
+        </div>
+
+        <!-- Home Section -->
+        <div id="home-section" class="content-section">
+            <div class="welcome-card">
+                <h2 id="welcome-user">Hello, Student!</h2>
+                <p>Ready to continue your learning journey?</p>
+                <div class="btn" id="start-learning-btn">View Progress</div>
+            </div>
+
+            <div class="section-title">
+                Your Subjects <span>See all</span>
+            </div>
+
+            <div class="subject-grid">
+                <div class="subject-card" data-subject="math">
+                    <div class="subject-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h3>Mathematics</h3>
+                    <p id="user-grade">Grade 10</p>
+                </div>
+                <div class="subject-card" data-subject="science">
+                    <div class="subject-icon">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <h3>Science</h3>
+                    <p id="user-grade-science">Grade 10</p>
+                </div>
+                <div class="subject-card" data-subject="english">
+                    <div class="subject-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3>English</h3>
+                    <p id="user-grade-english">Grade 10</p>
+                </div>
+                <div class="subject-card" data-subject="social">
+                    <div class="subject-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Social Studies</h3>
+                    <p id="user-grade-social">Grade 10</p>
+                </div>
+            </div>
+
+            <div class="section-title">
+                Recent Tests <span>View all</span>
+            </div>
+
+            <div class="swipe-container">
+                <div class="swipe-item">
+                    <div class="test-header">
+                        <div class="test-title">Math Quiz</div>
+                        <div class="test-progress">85%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <p>Algebra Basics • 15 Questions</p>
+                </div>
+                <div class="swipe-item">
+                    <div class="test-header">
+                        <div class="test-title">Science Test</div>
+                        <div class="test-progress">72%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 72%"></div>
+                    </div>
+                    <p>Biology • 20 Questions</p>
+                </div>
+                <div class="swipe-item">
+                    <div class="test-header">
+                        <div class="test-title">English Exam</div>
+                        <div class="test-progress">91%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 91%"></div>
+                    </div>
+                    <p>Literature • 25 Questions</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learn Section -->
+        <div id="learn-section" class="content-section" style="display: none;">
+            <div class="section-title">
+                Recommended Lessons
+            </div>
+
+            <div class="swipe-container">
+                <div class="swipe-item">
+                    <h3>Algebra Basics</h3>
+                    <p>Mathematics • 45 min</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 30%"></div>
+                    </div>
+                    <div class="btn">Continue</div>
+                </div>
+                <div class="swipe-item">
+                    <h3>Cell Biology</h3>
+                    <p>Science • 35 min</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="btn">Start</div>
+                </div>
+                <div class="swipe-item">
+                    <h3>Shakespeare</h3>
+                    <p>English • 50 min</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%"></div>
+                    </div>
+                    <div class="btn">Continue</div>
+                </div>
+            </div>
+
+            <div class="section-title">
+                All Subjects
+            </div>
+
+            <div class="subject-grid">
+                <div class="subject-card">
+                    <div class="subject-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h3>Mathematics</h3>
+                    <p>12 Lessons</p>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-icon">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <h3>Science</h3>
+                    <p>15 Lessons</p>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3>English</h3>
+                    <p>10 Lessons</p>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Social Studies</h3>
+                    <p>8 Lessons</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div id="test-section" class="content-section" style="display: none;">
+            <div class="test-creator">
+                <div class="creator-header">Create a New Test</div>
+                
+                <div class="form-group">
+                    <label class="form-label">Select Grade</label>
+                    <div class="grade-selector">
+                        <div class="grade-btn" data-grade="1-5">1-5</div>
+                        <div class="grade-btn" data-grade="6-8">6-8</div>
+                        <div class="grade-btn selected" data-grade="9-10">9-10</div>
+                        <div class="grade-btn" data-grade="11-12">11-12</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Select Subject</label>
+                    <div class="subject-selector">
+                        <div class="subject-btn selected" data-subject="math">Mathematics</div>
+                        <div class="subject-btn" data-subject="science">Science</div>
+                        <div class="subject-btn" data-subject="english">English</div>
+                        <div class="subject-btn" data-subject="social">Social Studies</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Number of Questions</label>
+                    <input type="range" min="5" max="20" value="10" class="form-input" id="question-count">
+                    <div style="text-align: center; margin-top: 5px;"><span id="question-count-value">10</span> Questions</div>
+                </div>
+                
+                <button class="auth-btn" id="generate-test-btn">Generate Test</button>
+            </div>
+
+            <div class="test-card" id="test-container" style="display: none;">
+                <div class="test-header">
+                    <div class="test-title" id="test-title">Mathematics Quiz</div>
+                    <div class="test-progress">Question <span id="current-question">1</span> of <span id="total-questions">10</span></div>
+                </div>
+
+                <div class="question">
+                    <h3 id="question-text">What is the solution for x in the equation 3x + 7 = 16?</h3>
+                </div>
+
+                <div class="options" id="options-container">
+                    <!-- Options will be generated here -->
+                </div>
+
+                <div class="btn" style="width: 100%; margin-top: 20px;" id="next-question-btn">Next Question</div>
+            </div>
+
+            <div class="test-card" id="test-results" style="display: none;">
+                <div class="creator-header">Test Results</div>
+                <div style="text-align: center; margin: 20px 0;">
+                    <div style="font-size: 2rem; font-weight: bold; color: var(--primary);" id="score-value">8/10</div>
+                    <div style="font-size: 1.2rem; margin: 10px 0;">Your Score</div>
+                    <div class="progress-bar" style="width: 80%; margin: 0 auto;">
+                        <div class="progress-fill" style="width: 80%"></div>
+                    </div>
+                </div>
+                
+                <div style="margin: 20px 0;">
+                    <div class="section-title">Summary</div>
+                    <div>Correct answers: <span id="correct-answers">8</span></div>
+                    <div>Incorrect answers: <span id="incorrect-answers">2</span></div>
+                    <div>Time spent: <span id="time-spent">5:30</span></div>
+                </div>
+                
+                <button class="auth-btn" id="retry-test-btn">Try Again</button>
+                <button class="auth-btn btn-outline" style="margin-top: 10px;" id="new-test-btn">New Test</button>
+            </div>
+        </div>
+
+        <!-- Profile Section -->
+        <div id="profile-section" class="content-section" style="display: none;">
+            <div class="profile-card">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="profile-name" id="profile-name">Alex Johnson</div>
+                <div class="profile-grade" id="profile-grade">Grade 10 Student</div>
+                <div class="btn">Edit Profile</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">85%</div>
+                    <div class="stat-label">Avg. Score</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">24</div>
+                    <div class="stat-label">Tests Taken</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Lessons</div>
+                </div>
+            </div>
+
+            <div class="section-title">
+                Account Settings
+            </div>
+
+            <div class="test-card">
+                <div class="option">
+                    <i class="fas fa-user-cog" style="margin-right: 10px;"></i> Profile Settings
+                </div>
+                <div class="option">
+                    <i class="fas fa-book-open" style="margin-right: 10px;"></i> Learning Preferences
+                </div>
+                <div class="option">
+                    <i class="fas fa-bell" style="margin-right: 10px;"></i> Notifications
+                </div>
+                <div class="option">
+                    <i class="fas fa-shield-alt" style="margin-right: 10px;"></i> Privacy & Security
+                </div>
+                <div class="option">
+                    <i class="fas fa-question-circle" style="margin-right: 10px;"></i> Help & Support
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <a href="#" class="nav-item active" data-section="home-section">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="#" class="nav-item" data-section="learn-section">
+                <i class="fas fa-book"></i>
+                <span>Learn</span>
+            </a>
+            <a href="#" class="nav-item" data-section="test-section">
+                <i class="fas fa-edit"></i>
+                <span>Test</span>
+            </a>
+            <a href="#" class="nav-item" data-section="profile-section">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">Test submitted successfully!</div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDzr2J-FFmQ8E1bs4LRHaUN9nJ2ZbYeV7w",
+            authDomain: "novaflix-7e164.firebaseapp.com",
+            databaseURL: "https://novaflix-7e164-default-rtdb.firebaseio.com",
+            projectId: "novaflix-7e164",
+            storageBucket: "novaflix-7e164.firebasestorage.app",
+            messagingSenderId: "132549884839",
+            appId: "1:132549884839:web:733a7c4d0877168b771482"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // DOM Elements
+        const authScreen = document.getElementById('auth-screen');
+        const appScreen = document.getElementById('app-screen');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const registerCard = document.getElementById('register-card');
+        const switchToRegister = document.getElementById('switch-to-register');
+        const switchToLogin = document.getElementById('switch-to-login');
+        const logoutBtn = document.getElementById('logout-btn');
+        const navItems = document.querySelectorAll('.nav-item');
+        const contentSections = document.querySelectorAll('.content-section');
+        const toast = document.getElementById('toast');
+        const generateTestBtn = document.getElementById('generate-test-btn');
+        const testContainer = document.getElementById('test-container');
+        const testResults = document.getElementById('test-results');
+        const questionCount = document.getElementById('question-count');
+        const questionCountValue = document.getElementById('question-count-value');
+        const nextQuestionBtn = document.getElementById('next-question-btn');
+        const retryTestBtn = document.getElementById('retry-test-btn');
+        const newTestBtn = document.getElementById('new-test-btn');
+        const welcomeUser = document.getElementById('welcome-user');
+        const profileName = document.getElementById('profile-name');
+        const profileGrade = document.getElementById('profile-grade');
+        const gradeButtons = document.querySelectorAll('.grade-btn');
+        const subjectButtons = document.querySelectorAll('.subject-btn');
+
+        // Question database
+        const questionBank = {
+            "math": {
+                "1-5": [
+                    {
+                        question: "What is 5 + 7?",
+                        options: ["10", "11", "12", "13"],
+                        answer: 2
+                    },
+                    {
+                        question: "How many sides does a triangle have?",
+                        options: ["2", "3", "4", "5"],
+                        answer: 1
+                    },
+                    {
+                        question: "What is 3 × 4?",
+                        options: ["7", "12", "9", "15"],
+                        answer: 1
+                    },
+                    {
+                        question: "Which number comes after 99?",
+                        options: ["98", "99", "100", "101"],
+                        answer: 2
+                    },
+                    {
+                        question: "What is half of 10?",
+                        options: ["2", "5", "10", "20"],
+                        answer: 1
+                    }
+                ],
+                "6-8": [
+                    {
+                        question: "Solve for x: 2x + 5 = 15",
+                        options: ["x = 5", "x = 10", "x = 7.5", "x = 5.5"],
+                        answer: 0
+                    },
+                    {
+                        question: "What is the area of a rectangle with length 8 and width 5?",
+                        options: ["13", "40", "26", "35"],
+                        answer: 1
+                    },
+                    {
+                        question: "What is 3/4 as a percentage?",
+                        options: ["25%", "50%", "75%", "100%"],
+                        answer: 2
+                    },
+                    {
+                        question: "What is the square root of 64?",
+                        options: ["6", "7", "8", "9"],
+                        answer: 2
+                    },
+                    {
+                        question: "What is the value of π (pi) approximately?",
+                        options: ["2.14", "3.14", "4.14", "3.5"],
+                        answer: 1
+                    }
+                ],
+                "9-10": [
+                    {
+                        question: "Solve for x: 3x + 7 = 22",
+                        options: ["x = 5", "x = 6", "x = 7", "x = 8"],
+                        answer: 0
+                    },
+                    {
+                        question: "What is the quadratic formula?",
+                        options: [
+                            "x = (-b ± √(b² - 4ac)) / (2a)",
+                            "x = (b ± √(b² - 4ac)) / (2a)",
+                            "x = (-b ± √(b² + 4ac)) / (2a)",
+                            "x = (-b ± √(b² - 4ac)) / (a)"
+                        ],
+                        answer: 0
+                    },
+                    {
+                        question: "What is the slope of the line y = 2x + 3?",
+                        options: ["2", "3", "5", "0"],
+                        answer: 0
+                    },
+                    {
+                        question: "Factor: x² - 4",
+                        options: ["(x-2)(x+2)", "(x-4)(x+4)", "(x-2)²", "(x+2)²"],
+                        answer: 0
+                    },
+                    {
+                        question: "What is the value of sin(90°)?",
+                        options: ["0", "0.5", "1", "Undefined"],
+                        answer: 2
+                    }
+                ],
+                "11-12": [
+                    {
+                        question: "What is the derivative of x²?",
+                        options: ["x", "2x", "2", "x³/3"],
+                        answer: 1
+                    },
+                    {
+                        question: "What is the value of ∫(2x dx) from 0 to 3?",
+                        options: ["6", "9", "12", "18"],
+                        answer: 1
+                    },
+                    {
+                        question: "What is the solution to the differential equation dy/dx = y?",
+                        options: ["y = e^x", "y = x²", "y = ln(x)", "y = sin(x)"],
+                        answer: 0
+                    },
+                    {
+                        question: "What is the determinant of a 2x2 matrix [[a, b], [c, d]]?",
+                        options: ["ab - cd", "ad - bc", "ac - bd", "a² - d²"],
+                        answer: 1
+                    },
+                    {
+                        question: "What is the value of lim(x→0) sin(x)/x?",
+                        options: ["0", "1", "∞", "Undefined"],
+                        answer: 1
+                    }
+                ]
+            },
+            "science": {
+                "1-5": [
+                    {
+                        question: "Which planet is known as the Red Planet?",
+                        options: ["Earth", "Mars", "Jupiter", "Venus"],
+                        answer: 1
+                    },
+                    {
+                        question: "What do plants need to make their own food?",
+                        options: ["Water", "Sunlight", "Soil", "All of the above"],
+                        answer: 3
+                    },
+                    {
+                        question: "Which animal is a mammal?",
+                        options: ["Shark", "Dolphin", "Frog", "Snake"],
+                        answer: 1
+                    },
+                    {
+                        question: "What is the largest organ of the human body?",
+                        options: ["Liver", "Skin", "Heart", "Brain"],
+                        answer: 1
+                    },
+                    {
+                        question: "Which of these is a renewable resource?",
+                        options: ["Coal", "Oil", "Solar energy", "Natural gas"],
+                        answer: 2
+                    }
+                ],
+                "6-8": [
+                    {
+                        question: "What is the chemical symbol for gold?",
+                        options: ["Go", "Gd", "Au", "Ag"],
+                        answer: 2
+                    },
+                    {
+                        question: "What is the smallest unit of life?",
+                        options: ["Atom", "Cell", "Molecule", "Organ"],
+                        answer: 1
+                    },
+                    {
+                        question: "What process do plants use to make food?",
+                        options: ["Respiration", "Photosynthesis", "Digestion", "Transpiration"],
+                        answer: 1
+                    },
+                    {
+                        question: "Which gas do plants absorb from the atmosphere?",
+                        options: ["Oxygen", "Nitrogen", "Carbon dioxide", "Hydrogen"],
+                        answer: 2
+                    },
+                    {
+                        question: "What is the hardest natural substance on Earth?",
+                        options: ["Gold", "Iron", "Diamond", "Platinum"],
+                        answer: 2
+                    }
+                ],
+                "9-10": [
+                    {
+                        question: "What is the atomic number of carbon?",
+                        options: ["6", "12", "14", "16"],
+                        answer: 0
+                    },
+                    {
+                        question: "Which law states that energy cannot be created or destroyed?",
+                        options: [
+                            "First Law of Thermodynamics",
+                            "Law of Conservation of Mass",
+                            "Newton's First Law",
+                            "Ohm's Law"
+                        ],
+                        answer: 0
+                    },
+                    {
+                        question: "What is the speed of light in a vacuum?",
+                        options: [
+                            "299,792,458 m/s",
+                            "150,000,000 m/s",
+                            "450,000,000 m/s",
+                            "100,000,000 m/s"
+                        ],
+                        answer: 0
+                    },
+                    {
+                        question: "Which subatomic particle has a negative charge?",
+                        options: ["Proton", "Neutron", "Electron", "Photon"],
+                        answer: 2
+                    },
+                    {
+                        question: "What is the chemical formula for water?",
+                        options: ["H2O", "CO2", "O2", "H2O2"],
+                        answer: 0
+                    }
+                ],
+                "11-12": [
+                    {
+                        question: "What is the second law of thermodynamics?",
+                        options: [
+                            "Energy cannot be created or destroyed",
+                            "The entropy of an isolated system never decreases",
+                            "For every action, there is an equal and opposite reaction",
+                            "The pressure of a gas is inversely proportional to its volume"
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "What is the Heisenberg uncertainty principle?",
+                        options: [
+                            "It is impossible to know both position and momentum of a particle exactly",
+                            "Energy is quantized in atoms",
+                            "Light behaves as both a particle and a wave",
+                            "The universe is expanding"
+                        ],
+                        answer: 0
+                    },
+                    {
+                        question: "Which of these is a strong acid?",
+                        options: ["Acetic acid", "Citric acid", "Hydrochloric acid", "Carbonic acid"],
+                        answer: 2
+                    },
+                    {
+                        question: "What is the function of mitochondria?",
+                        options: [
+                            "Protein synthesis",
+                            "Cellular respiration",
+                            "Photosynthesis",
+                            "DNA replication"
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "What is the formula for Newton's second law of motion?",
+                        options: ["F = ma", "E = mc²", "PV = nRT", "V = IR"],
+                        answer: 0
+                    }
+                ]
+            },
+            "english": {
+                "1-5": [
+                    {
+                        question: "Which of these is a noun?",
+                        options: ["Run", "Beautiful", "School", "Quickly"],
+                        answer: 2
+                    },
+                    {
+                        question: "What is the past tense of 'eat'?",
+                        options: ["Eated", "Ate", "Eaten", "Eating"],
+                        answer: 1
+                    },
+                    {
+                        question: "Which word is spelled correctly?",
+                        options: ["Recieve", "Receive", "Receeve", "Resieve"],
+                        answer: 1
+                    },
+                    {
+                        question: "What is a synonym for 'happy'?",
+                        options: ["Sad", "Joyful", "Angry", "Tired"],
+                        answer: 1
+                    },
+                    {
+                        question: "Which of these is a complete sentence?",
+                        options: [
+                            "The big dog.",
+                            "Running in the park.",
+                            "She reads books.",
+                            "After the game."
+                        ],
+                        answer: 2
+                    }
+                ],
+                "6-8": [
+                    {
+                        question: "What is the literary term for giving human qualities to non-human things?",
+                        options: ["Simile", "Metaphor", "Personification", "Hyperbole"],
+                        answer: 2
+                    },
+                    {
+                        question: "Which of these is a complex sentence?",
+                        options: [
+                            "I like pizza.",
+                            "Although it was raining, we went outside.",
+                            "She ran and he walked.",
+                            "The cat meowed."
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "What is the theme of a story?",
+                        options: [
+                            "The time and place",
+                            "The main message or idea",
+                            "The sequence of events",
+                            "The main character"
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "Which punctuation mark is used to indicate possession?",
+                        options: ["Period", "Comma", "Apostrophe", "Quotation marks"],
+                        answer: 2
+                    },
+                    {
+                        question: "What is the adjective in this sentence: 'The tall building stood proudly.'",
+                        options: ["The", "tall", "building", "stood"],
+                        answer: 1
+                    }
+                ],
+                "9-10": [
+                    {
+                        question: "Who wrote 'Romeo and Juliet'?",
+                        options: [
+                            "Charles Dickens",
+                            "William Shakespeare",
+                            "Jane Austen",
+                            "Mark Twain"
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "What is iambic pentameter?",
+                        options: [
+                            "A type of rhyme scheme",
+                            "A meter with five feet per line",
+                            "A form of sonnet",
+                            "A type of metaphor"
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "What is the definition of 'irony'?",
+                        options: [
+                            "A comparison using like or as",
+                            "The opposite of what is expected",
+                            "An exaggerated statement",
+                            "A recurring theme"
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "Which literary device is used in 'The world is a stage'?",
+                        options: ["Simile", "Metaphor", "Personification", "Alliteration"],
+                        answer: 1
+                    },
+                    {
+                        question: "What is the purpose of a thesis statement in an essay?",
+                        options: [
+                            "To provide evidence",
+                            "To conclude the essay",
+                            "To present the main argument",
+                            "To introduce examples"
+                        ],
+                        answer: 2
+                    }
+                ],
+                "11-12": [
+                    {
+                        question: "Who wrote '1984'?",
+                        options: [
+                            "George Orwell",
+                            "Aldous Huxley",
+                            "Ray Bradbury",
+                            "H.G. Wells"
+                        ],
+                        answer: 0
+                    },
+                    {
+                        question: "What is stream of consciousness in literature?",
+                        options: [
+                            "A type of poetry",
+                            "A narrative mode that presents thoughts and feelings",
+                            "A rhetorical device",
+                            "A form of satire"
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "Which work is an example of magical realism?",
+                        options: [
+                            "Pride and Prejudice",
+                            "One Hundred Years of Solitude",
+                            "The Great Gatsby",
+                            "To Kill a Mockingbird"
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "What is a tragic flaw?",
+                        options: [
+                            "A character's strength",
+                            "A character's weakness that leads to their downfall",
+                            "A plot device",
+                            "A type of conflict"
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "Which literary movement emphasized emotion and individualism?",
+                        options: ["Romanticism", "Realism", "Naturalism", "Modernism"],
+                        answer: 0
+                    }
+                ]
+            },
+            "social": {
+                "1-5": [
+                    {
+                        question: "Who was the first President of the United States?",
+                        options: [
+                            "Thomas Jefferson",
+                            "George Washington",
+                            "Abraham Lincoln",
+                            "John Adams"
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "What is the capital of the United States?",
+                        options: ["New York", "Los Angeles", "Washington D.C.", "Chicago"],
+                        answer: 2
+                    },
+                    {
+                        question: "Which ocean is on the west coast of the United States?",
+                        options: [
+                            "Atlantic Ocean",
+                            "Indian Ocean",
+                            "Pacific Ocean",
+                            "Arctic Ocean"
+                        ],
+                        answer: 2
+                    },
+                    {
+                        question: "What are the three branches of the U.S. government?",
+                        options: [
+                            "Executive, Legislative, Judicial",
+                            "Federal, State, Local",
+                            "President, Congress, Supreme Court",
+                            "Democrat, Republican, Independent"
+                        ],
+                        answer: 0
+                    },
+                    {
+                        question: "Which holiday celebrates the independence of the United States?",
+                        options: [
+                            "Memorial Day",
+                            "Labor Day",
+                            "Thanksgiving",
+                            "Fourth of July"
+                        ],
+                        answer: 3
+                    }
+                ],
+                "6-8": [
+                    {
+                        question: "What was the main cause of the American Civil War?",
+                        options: [
+                            "Taxation without representation",
+                            "Slavery",
+                            "States' rights",
+                            "Economic differences"
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "Which ancient civilization built the pyramids?",
+                        options: ["Greeks", "Romans", "Egyptians", "Mayans"],
+                        answer: 2
+                    },
+                    {
+                        question: "What was the Renaissance?",
+                        options: [
+                            "A period of artistic and cultural rebirth",
+                            "A religious movement",
+                            "A political revolution",
+                            "A scientific discovery period"
+                        ],
+                        answer: 0
+                    },
+                    {
+                        question: "Which document established the principles of the U.S. government?",
+                        options: [
+                            "Declaration of Independence",
+                            "Constitution",
+                            "Bill of Rights",
+                            "Emancipation Proclamation"
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "What was the Silk Road?",
+                        options: [
+                            "A trade route connecting East and West",
+                            "A road made of silk",
+                            "A military path",
+                            "A religious pilgrimage route"
+                        ],
+                        answer: 0
+                    }
+                ],
+                "9-10": [
+                    {
+                        question: "What was the Cold War?",
+                        options: [
+                            "A war fought in cold weather",
+                            "A conflict between the U.S. and Soviet Union",
+                            "A war over natural resources",
+                            "A religious conflict"
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "Which event started World War I?",
+                        options: [
+                            "The sinking of the Lusitania",
+                            "The assassination of Archduke Franz Ferdinand",
+                            "The invasion of Poland",
+                            "The bombing of Pearl Harbor"
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "What was the Industrial Revolution?",
+                        options: [
+                            "A political revolution",
+                            "A shift from agrarian to industrial society",
+                            "A workers' strike",
+                            "A technological breakthrough"
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "What is the economic system of the United States?",
+                        options: [
+                            "Socialism",
+                            "Communism",
+                            "Capitalism",
+                            "Feudalism"
+                        ],
+                        answer: 2
+                    },
+                    {
+                        question: "What was the purpose of the Marshall Plan?",
+                        options: [
+                            "To rebuild European economies after WWII",
+                            "To contain communism",
+                            "To establish NATO",
+                            "To end the Cold War"
+                        ],
+                        answer: 0
+                    }
+                ],
+                "11-12": [
+                    {
+                        question: "What was the significance of Brown v. Board of Education?",
+                        options: [
+                            "It ended segregation in schools",
+                            "It legalized abortion",
+                            "It established free speech rights",
+                            "It ended the Vietnam War"
+                        ],
+                        answer: 0
+                    },
+                    {
+                        question: "What is globalization?",
+                        options: [
+                            "The process of international integration",
+                            "The spread of democracy",
+                            "The end of colonialism",
+                            "The rise of nationalism"
+                        ],
+                        answer: 0
+                    },
+                    {
+                        question: "What was the Enlightenment?",
+                        options: [
+                            "A religious movement",
+                            "An intellectual movement emphasizing reason",
+                            "A political revolution",
+                            "A scientific discovery period"
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "What caused the Great Depression?",
+                        options: [
+                            "World War I",
+                            "The stock market crash of 1929",
+                            "The Dust Bowl",
+                            "A combination of factors"
+                        ],
+                        answer: 3
+                    },
+                    {
+                        question: "What is the difference between capitalism and socialism?",
+                        options: [
+                            "Capitalism has private ownership, socialism has public ownership",
+                            "Socialism has private ownership, capitalism has public ownership",
+                            "There is no difference",
+                            "Capitalism is political, socialism is economic"
+                        ],
+                        answer: 0
+                    }
+                ]
+            }
+        };
+
+        // Current test state
+        let currentTest = {
+            questions: [],
+            currentQuestionIndex: 0,
+            score: 0,
+            selectedGrade: "9-10",
+            selectedSubject: "math",
+            startTime: null,
+            endTime: null
+        };
+
+        // Initialize the app
+        function init() {
+            // Check if user is logged in
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    showApp();
+                    loadUserData(user.uid);
+                } else {
+                    showAuth();
+                }
+            });
+
+            // Event listeners
+            loginForm.addEventListener('submit', handleLogin);
+            registerForm.addEventListener('submit', handleRegister);
+            switchToRegister.addEventListener('click', () => {
+                document.querySelector('.auth-card').style.display = 'none';
+                registerCard.style.display = 'block';
+            });
+            switchToLogin.addEventListener('click', () => {
+                registerCard.style.display = 'none';
+                document.querySelector('.auth-card').style.display = 'block';
+            });
+            logoutBtn.addEventListener('click', handleLogout);
+            
+            // Navigation
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    // Get target section
+                    const targetSection = item.getAttribute('data-section');
+                    
+                    // Update active nav item
+                    navItems.forEach(navItem => navItem.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    // Show target section
+                    contentSections.forEach(section => section.style.display = 'none');
+                    document.getElementById(targetSection).style.display = 'block';
+                });
+            });
+
+            // Test generation
+            questionCount.addEventListener('input', () => {
+                questionCountValue.textContent = questionCount.value;
+            });
+
+            gradeButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    gradeButtons.forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    currentTest.selectedGrade = btn.getAttribute('data-grade');
+                });
+            });
+
+            subjectButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    subjectButtons.forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    currentTest.selectedSubject = btn.getAttribute('data-subject');
+                });
+            });
+
+            generateTestBtn.addEventListener('click', generateTest);
+            nextQuestionBtn.addEventListener('click', nextQuestion);
+            retryTestBtn.addEventListener('click', retryTest);
+            newTestBtn.addEventListener('click', newTest);
+        }
+
+        // Show authentication screen
+        function showAuth() {
+            authScreen.style.display = 'flex';
+            appScreen.style.display = 'none';
+        }
+
+        // Show app screen
+        function showApp() {
+            authScreen.style.display = 'none';
+            appScreen.style.display = 'block';
+        }
+
+        // Handle login
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = loginForm.querySelector('input[type="email"]').value;
+            const password = loginForm.querySelector('input[type="password"]').value;
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    showToast('Login successful!');
+                })
+                .catch((error) => {
+                    showToast('Error: ' + error.message);
+                });
+        }
+
+        // Handle register
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = registerForm.querySelector('input[type="text"]').value;
+            const email = registerForm.querySelector('input[type="email"]').value;
+            const password = registerForm.querySelector('input[type="password"]').value;
+            const grade = registerForm.querySelector('select').value;
+            
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    
+                    // Save user data to Firestore
+                    return db.collection('users').doc(user.uid).set({
+                        name: name,
+                        email: email,
+                        grade: grade,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                })
+                .then(() => {
+                    showToast('Registration successful!');
+                    // Switch back to login form
+                    registerCard.style.display = 'none';
+                    document.querySelector('.auth-card').style.display = 'block';
+                    registerForm.reset();
+                })
+                .catch((error) => {
+                    showToast('Error: ' + error.message);
+                });
+        }
+
+        // Handle logout
+        function handleLogout() {
+            auth.signOut()
+                .then(() => {
+                    showToast('Logged out successfully');
+                })
+                .catch((error) => {
+                    showToast('Error: ' + error.message);
+                });
+        }
+
+        // Load user data
+        function loadUserData(uid) {
+            db.collection('users').doc(uid).get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const userData = doc.data();
+                        welcomeUser.textContent = `Hello, ${userData.name}!`;
+                        profileName.textContent = userData.name;
+                        profileGrade.textContent = `Grade ${userData.grade} Student`;
+                        
+                        // Update grade displays
+                        const gradeElements = document.querySelectorAll('[id^="user-grade"]');
+                        gradeElements.forEach(el => {
+                            el.textContent = `Grade ${userData.grade}`;
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.log("Error getting user data:", error);
+                });
+        }
+
+        // Generate test
+        function generateTest() {
+            const questionCount = parseInt(document.getElementById('question-count').value);
+            const grade = currentTest.selectedGrade;
+            const subject = currentTest.selectedSubject;
+            
+            // Get questions for selected grade and subject
+            const availableQuestions = questionBank[subject][grade];
+            
+            // Shuffle questions and select the requested number
+            const shuffledQuestions = [...availableQuestions].sort(() => 0.5 - Math.random());
+            currentTest.questions = shuffledQuestions.slice(0, questionCount);
+            currentTest.currentQuestionIndex = 0;
+            currentTest.score = 0;
+            currentTest.startTime = new Date();
+            
+            // Hide test creator and show test container
+            document.querySelector('.test-creator').style.display = 'none';
+            testContainer.style.display = 'block';
+            
+            // Display first question
+            displayQuestion();
+        }
+
+        // Display current question
+        function displayQuestion() {
+            const question = currentTest.questions[currentTest.currentQuestionIndex];
+            const questionNumber = currentTest.currentQuestionIndex + 1;
+            const totalQuestions = currentTest.questions.length;
+            
+            // Update question counter
+            document.getElementById('current-question').textContent = questionNumber;
+            document.getElementById('total-questions').textContent = totalQuestions;
+            
+            // Set question text
+            document.getElementById('question-text').textContent = question.question;
+            
+            // Generate options
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.setAttribute('data-index', index);
+                
+                optionElement.addEventListener('click', () => {
+                    // Remove selected class from all options
+                    document.querySelectorAll('.option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Add selected class to clicked option
+                    optionElement.classList.add('selected');
+                });
+                
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // Update next button text for last question
+            if (questionNumber === totalQuestions) {
+                nextQuestionBtn.textContent = 'Finish Test';
+            } else {
+                nextQuestionBtn.textContent = 'Next Question';
+            }
+        }
+
+        // Move to next question or finish test
+        function nextQuestion() {
+            const selectedOption = document.querySelector('.option.selected');
+            
+            if (!selectedOption) {
+                showToast('Please select an answer');
+                return;
+            }
+            
+            // Check if answer is correct
+            const selectedIndex = parseInt(selectedOption.getAttribute('data-index'));
+            const correctIndex = currentTest.questions[currentTest.currentQuestionIndex].answer;
+            
+            if (selectedIndex === correctIndex) {
+                currentTest.score++;
+            }
+            
+            // Move to next question or finish test
+            currentTest.currentQuestionIndex++;
+            
+            if (currentTest.currentQuestionIndex < currentTest.questions.length) {
+                displayQuestion();
+            } else {
+                finishTest();
+            }
+        }
+
+        // Finish test and show results
+        function finishTest() {
+            currentTest.endTime = new Date();
+            const timeSpent = Math.round((currentTest.endTime - currentTest.startTime) / 1000);
+            const minutes = Math.floor(timeSpent / 60);
+            const seconds = timeSpent % 60;
+            const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Calculate score percentage
+            const scorePercent = Math.round((currentTest.score / currentTest.questions.length) * 100);
+            
+            // Update results
+            document.getElementById('score-value').textContent = `${currentTest.score}/${currentTest.questions.length}`;
+            document.getElementById('correct-answers').textContent = currentTest.score;
+            document.getElementById('incorrect-answers').textContent = currentTest.questions.length - currentTest.score;
+            document.getElementById('time-spent').textContent = timeString;
+            document.querySelector('.progress-fill').style.width = `${scorePercent}%`;
+            
+            // Hide test container and show results
+            testContainer.style.display = 'none';
+            testResults.style.display = 'block';
+            
+            // Save test results to Firebase
+            const user = auth.currentUser;
+            if (user) {
+                db.collection('tests').add({
+                    userId: user.uid,
+                    grade: currentTest.selectedGrade,
+                    subject: currentTest.selectedSubject,
+                    score: currentTest.score,
+                    totalQuestions: currentTest.questions.length,
+                    timeSpent: timeSpent,
+                    completedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+        }
+
+        // Retry the same test
+        function retryTest() {
+            currentTest.currentQuestionIndex = 0;
+            currentTest.score = 0;
+            currentTest.startTime = new Date();
+            
+            testResults.style.display = 'none';
+            testContainer.style.display = 'block';
+            
+            displayQuestion();
+        }
+
+        // Create a new test
+        function newTest() {
+            testResults.style.display = 'none';
+            document.querySelector('.test-creator').style.display = 'block';
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize the app when loaded
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
